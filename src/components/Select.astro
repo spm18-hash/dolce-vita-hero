@@ -1,0 +1,334 @@
+---
+import { Square, SquareCheck } from "@lucide/astro";
+
+interface Props {
+    options: Options[];
+    placeholder: string;
+}
+
+interface Options {
+    value: string;
+    label: string;
+}
+
+const {
+    options, // JSON string array
+    placeholder = "Select Categories",
+} = Astro.props;
+---
+
+<custom-select multiple>
+    <button
+        type="button"
+        class="select-trigger"
+        aria-haspopup="listbox"
+        aria-expanded="false"
+    >
+        <div class="selected-values">
+            <span class="placeholder">{placeholder}</span>
+        </div>
+        <svg
+            class="arrow"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+        >
+            <path
+                d="M6 9L12 15L18 9"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+        </svg>
+    </button>
+
+    <div class="select-dropdown" role="listbox" aria-multiselectable="true">
+        {
+            options.map((opt) => (
+                <label class="select-option" data-value={opt.value}>
+                    <input type="checkbox" value={opt.value} />
+                    <Square class="icon unchecked" />
+                    <SquareCheck class="icon checked" />
+                    <span>{opt.label}</span>
+                </label>
+            ))
+        }
+    </div>
+</custom-select>
+
+<script>
+    class CustomSelect extends HTMLElement {
+        private trigger: HTMLButtonElement;
+        private dropdown: HTMLDivElement;
+        private selectedContainer: HTMLDivElement;
+        private options: NodeListOf<HTMLElement>;
+        private checkboxes: NodeListOf<HTMLInputElement>;
+        private selected: string[] = [];
+        private isOpen = false;
+
+        constructor() {
+            super();
+            this.trigger =
+                this.querySelector<HTMLButtonElement>(".select-trigger")!;
+            this.dropdown =
+                this.querySelector<HTMLDivElement>(".select-dropdown")!;
+            this.selectedContainer =
+                this.querySelector<HTMLDivElement>(".selected-values")!;
+            this.options = this.querySelectorAll<HTMLElement>(".select-option");
+            this.checkboxes = this.querySelectorAll<HTMLInputElement>(
+                'input[type="checkbox"]',
+            );
+        }
+
+        connectedCallback() {
+            if (!this.trigger || !this.dropdown) return;
+
+            // Toggle dropdown
+            this.trigger.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.toggle();
+            });
+
+            // Main click handler on option
+            this.options.forEach((option) => {
+                option.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const checkbox = option.querySelector<HTMLInputElement>(
+                        'input[type="checkbox"]',
+                    );
+                    if (!checkbox) return;
+
+                    // Toggle checkbox state
+                    checkbox.checked = !checkbox.checked;
+
+                    // Sync everything
+                    this.syncState();
+                });
+            });
+
+            // Also listen to direct checkbox changes (backup)
+            this.checkboxes.forEach((cb) => {
+                cb.addEventListener("change", () => this.syncState());
+            });
+
+            // Close when clicking outside
+            document.addEventListener("click", (e) => {
+                if (!this.contains(e.target as Node)) this.close();
+            });
+
+            // Keyboard support
+            this.trigger.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    this.toggle();
+                }
+            });
+
+            // Initialize from value attribute if exists
+            const initial = this.getAttribute("value");
+            if (initial) {
+                try {
+                    this.selected = JSON.parse(initial);
+                    this.syncState(true);
+                } catch (_) {}
+            }
+        }
+
+        private syncState(fromInitial = false) {
+            this.selected = Array.from(this.checkboxes)
+                .filter((cb) => cb.checked)
+                .map((cb) => cb.value);
+
+            // Sync .active class with checkbox state
+            this.options.forEach((option) => {
+                const value = option.dataset.value;
+                const checkbox = option.querySelector<HTMLInputElement>(
+                    'input[type="checkbox"]',
+                );
+                const isActive = value ? this.selected.includes(value) : false;
+
+                option.classList.toggle("active", isActive);
+                if (checkbox) checkbox.checked = isActive;
+            });
+
+            this.renderSelected();
+            this.setAttribute("value", JSON.stringify(this.selected));
+
+            this.dispatchEvent(
+                new CustomEvent("change", {
+                    detail: { value: [...this.selected] },
+                    bubbles: true,
+                }),
+            );
+        }
+
+        toggle() {
+            this.isOpen = !this.isOpen;
+            this.dropdown.classList.toggle("open", this.isOpen);
+            this.classList.toggle("active", this.isOpen);
+            this.trigger.setAttribute("aria-expanded", String(this.isOpen));
+        }
+
+        close() {
+            this.isOpen = false;
+            this.dropdown.classList.remove("open");
+            this.classList.remove("active");
+            this.trigger.setAttribute("aria-expanded", "false");
+        }
+
+        renderSelected() {
+            if (this.selected.length === 0) {
+                this.selectedContainer.innerHTML = `<span class="placeholder">Category</span>`;
+                return;
+            }
+
+            const labels = this.selected
+                .map((value) => {
+                    const opt = [...this.options].find(
+                        (o) => o.dataset.value === value,
+                    );
+                    return opt?.querySelector("span")?.textContent?.trim();
+                })
+                .filter(Boolean);
+
+            this.selectedContainer.innerHTML = `<span class="selected-text">${labels.join(", ")}</span>`;
+        }
+
+        // Public API
+        get value() {
+            return this.selected;
+        }
+        set value(values: string[]) {
+            this.selected = values;
+            this.syncState();
+        }
+    }
+
+    customElements.define("custom-select", CustomSelect);
+</script>
+
+<style>
+    custom-select {
+        position: relative;
+        display: block;
+        font-family:
+            system-ui,
+            -apple-system,
+            sans-serif;
+        width: 100%;
+    }
+
+    .select-trigger {
+        width: 100%;
+        min-height: 52px;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: transparent;
+        border-bottom: 1px solid white;
+        color: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .select-trigger:hover {
+        border-color: #555;
+    }
+
+    .selected-values {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        overflow: hidden;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+
+        flex: 1;
+    }
+
+    .placeholder {
+        color: white;
+        font-size: 16px;
+    }
+
+    .arrow {
+        flex-shrink: 0;
+        transition: transform 0.25s ease;
+        color: #aaa;
+    }
+
+    custom-select.active .arrow {
+        transform: rotate(180deg);
+    }
+
+    .select-dropdown {
+        position: absolute;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 0 0 10px 10px;
+        display: none;
+        z-index: 100;
+        max-height: 320px;
+        overflow-y: auto;
+        padding: 6px 0;
+    }
+
+    .select-dropdown.open {
+        display: block;
+    }
+
+    .select-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s;
+    }
+
+    .select-option:hover {
+        background: #f8f8f8;
+    }
+
+    .select-option.active {
+        background: #f0fdf4;
+    }
+
+    .select-option input {
+        display: none;
+    }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        transition: all 0.2s ease;
+    }
+
+    .unchecked {
+        color: #999;
+        display: block;
+    }
+
+    .checked {
+        color: #22c55e;
+        display: none;
+    }
+
+    .select-option.active .unchecked {
+        display: none;
+    }
+
+    .select-option.active .checked {
+        display: block;
+    }
+
+    .select-option span {
+        font-size: 14px;
+        color: #1f2937;
+    }
+</style>
