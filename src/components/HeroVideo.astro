@@ -1,32 +1,30 @@
 ---
-interface Props {
-    poster: string;
-    alt?: string;
-}
 import { Image } from "astro:assets";
-const { poster, alt = "Dolce Vita Luxury Real Estate" } = Astro.props;
 import Logo from "../assets/dolce-vita-logo.webp";
 import Select from "./Select.astro";
 import { Bell, Search, Calculator } from "@lucide/astro";
+
+import Thumbnail from "../assets/hero-video-thumbnail.png";
 ---
 
 <div class="hero-section relative w-full h-100 md:h-125 lg:h-150 xl:h-205">
     <!-- Poster Image (LCP Element) -->
-    <!-- <img
-        src={poster}
-        alt={alt}
+
+    <Image
+        src={Thumbnail}
+        quality={35}
+        format="avif"
+        alt={"Dolce Vita Luxury Real Estate"}
         fetchpriority="high"
         loading="eager"
-        width="1920"
-        height="1080"
         class="hero-poster absolute inset-0 w-full h-full object-cover"
         id="hero-poster"
-    /> -->
+    />
 
     <!-- Desktop Video -->
     <video
         id="hero-desktop"
-        class="hero-video desktop absolute inset-0 w-full h-full object-cover"
+        class="hero-video max-md:hidden absolute inset-0 w-full h-full object-cover"
         muted
         loop
         playsinline
@@ -39,7 +37,7 @@ import { Bell, Search, Calculator } from "@lucide/astro";
     <!-- Mobile Video -->
     <video
         id="hero-mobile"
-        class="hero-video mobile absolute inset-0 w-full h-full object-cover"
+        class="hero-video md:hidden absolute inset-0 w-full h-full object-cover"
         muted
         loop
         playsinline
@@ -99,8 +97,9 @@ import { Bell, Search, Calculator } from "@lucide/astro";
                 <a href="/">
                     <Image
                         loading={"eager"}
-                        quality={50}
                         src={Logo}
+                        width={125}
+                        height={80}
                         alt={"Logo"}
                         class="aspect-auto w-auto h-16 md:h-20 invert-100"
                     />
@@ -238,27 +237,6 @@ import { Bell, Search, Calculator } from "@lucide/astro";
     </div>
 </div>
 
-<style>
-    .hero-video {
-        opacity: 0;
-        transition: opacity 800ms ease;
-    }
-    .hero-video.playing {
-        opacity: 1;
-    }
-    .mobile {
-        display: none;
-    }
-    @media (max-width: 768px) {
-        .desktop {
-            display: none;
-        }
-        .mobile {
-            display: block;
-        }
-    }
-</style>
-
 <script>
     let currentVideo: HTMLVideoElement | null = null;
 
@@ -284,7 +262,15 @@ import { Bell, Search, Calculator } from "@lucide/astro";
         }
     }
 
+    const poster = document.getElementById("hero-poster") as HTMLImageElement;
+
     const init = () => playCorrectVideo();
+
+    if (poster.complete) {
+        init();
+    } else {
+        poster.addEventListener("load", init);
+    }
 
     window.addEventListener("load", init);
 

@@ -11,24 +11,25 @@ interface Options {
     label: string;
 }
 
-const {
-    options, // JSON string array
-    placeholder = "Select Categories",
-} = Astro.props;
+const { options, placeholder = "Select Categories" } = Astro.props;
 ---
 
-<custom-select multiple>
+<custom-select multiple class="relative block w-full font-sans">
     <button
         type="button"
-        class="select-trigger"
+        class="group w-full min-h-13 px-4 py-3 flex items-center justify-between bg-transparent border-b border-white text-white cursor-pointer transition-all duration-200 hover:border-neutral-600"
         aria-haspopup="listbox"
         aria-expanded="false"
+        id="select-trigger"
     >
-        <div class="selected-values">
-            <span class="placeholder">{placeholder}</span>
+        <div
+            id="selected-values"
+            class="flex items-center gap-2 overflow-hidden whitespace-nowrap flex-nowrap flex-1"
+        >
+            <span class="text-white">{placeholder}</span>
         </div>
         <svg
-            class="arrow"
+            class="flex shrink-0 transition-transform duration-250 text-neutral-400 group-aria-expanded:rotate-180"
             width="14"
             height="14"
             viewBox="0 0 24 24"
@@ -43,14 +44,25 @@ const {
         </svg>
     </button>
 
-    <div class="select-dropdown" role="listbox" aria-multiselectable="true">
+    <div
+        id="select-dropdown"
+        class="absolute left-0 right-0 bg-white rounded-b-[10px] hidden z-100 max-h-80 overflow-y-auto py-1.5"
+        role="listbox"
+        aria-multiselectable="true"
+    >
         {
             options.map((opt) => (
-                <label class="select-option" data-value={opt.value}>
-                    <input type="checkbox" value={opt.value} />
-                    <Square class="icon unchecked" />
-                    <SquareCheck class="icon checked" />
-                    <span>{opt.label}</span>
+                <label
+                    class:list={[
+                        "select-option",
+                        "group/option flex items-center gap-3 px-4 py-3 cursor-pointer select-none transition-colors duration-150 hover:bg-neutral-50 data-[active=true]:bg-green-50",
+                    ]}
+                    data-value={opt.value}
+                >
+                    <input type="checkbox" value={opt.value} class="hidden" />
+                    <Square class="size-5 text-neutral-400 block group-data-[active=true]/option:hidden" />
+                    <SquareCheck class="size-5 text-green-500 hidden group-data-[active=true]/option:block" />
+                    <span class="text-sm text-neutral-800">{opt.label}</span>
                 </label>
             ))
         }
@@ -70,11 +82,11 @@ const {
         constructor() {
             super();
             this.trigger =
-                this.querySelector<HTMLButtonElement>(".select-trigger")!;
+                this.querySelector<HTMLButtonElement>("#select-trigger")!;
             this.dropdown =
-                this.querySelector<HTMLDivElement>(".select-dropdown")!;
+                this.querySelector<HTMLDivElement>("#select-dropdown")!;
             this.selectedContainer =
-                this.querySelector<HTMLDivElement>(".selected-values")!;
+                this.querySelector<HTMLDivElement>("#selected-values")!;
             this.options = this.querySelectorAll<HTMLElement>(".select-option");
             this.checkboxes = this.querySelectorAll<HTMLInputElement>(
                 'input[type="checkbox"]',
@@ -148,7 +160,7 @@ const {
                 );
                 const isActive = value ? this.selected.includes(value) : false;
 
-                option.classList.toggle("active", isActive);
+                option.setAttribute("data-active", String(isActive));
                 if (checkbox) checkbox.checked = isActive;
             });
 
@@ -165,21 +177,19 @@ const {
 
         toggle() {
             this.isOpen = !this.isOpen;
-            this.dropdown.classList.toggle("open", this.isOpen);
-            this.classList.toggle("active", this.isOpen);
+            this.dropdown.classList.toggle("hidden", !this.isOpen);
             this.trigger.setAttribute("aria-expanded", String(this.isOpen));
         }
 
         close() {
             this.isOpen = false;
-            this.dropdown.classList.remove("open");
-            this.classList.remove("active");
+            this.dropdown.classList.add("hidden");
             this.trigger.setAttribute("aria-expanded", "false");
         }
 
         renderSelected() {
             if (this.selected.length === 0) {
-                this.selectedContainer.innerHTML = `<span class="placeholder">Category</span>`;
+                this.selectedContainer.innerHTML = `<span class="text-white">Category</span>`;
                 return;
             }
 
@@ -192,7 +202,7 @@ const {
                 })
                 .filter(Boolean);
 
-            this.selectedContainer.innerHTML = `<span class="selected-text">${labels.join(", ")}</span>`;
+            this.selectedContainer.innerHTML = `<span class="selected-text text-white">${labels.join(", ")}</span>`;
         }
 
         // Public API
@@ -208,7 +218,7 @@ const {
     customElements.define("custom-select", CustomSelect);
 </script>
 
-<style>
+<!-- <style>
     custom-select {
         position: relative;
         display: block;
@@ -331,4 +341,4 @@ const {
         font-size: 14px;
         color: #1f2937;
     }
-</style>
+</style> -->
