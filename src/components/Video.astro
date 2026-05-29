@@ -1,0 +1,89 @@
+---
+import { Image } from "astro:assets";
+
+import Thumbnail from "../assets/hero-video-thumbnail.png";
+---
+
+<>
+    <Image
+        src={Thumbnail}
+        quality={35}
+        format="avif"
+        alt={"Dolce Vita Luxury Real Estate"}
+        fetchpriority="high"
+        loading="eager"
+        class="hero-poster absolute inset-0 w-full h-full object-cover"
+        id="hero-poster"
+    />
+
+    <!-- Desktop Video -->
+    <video
+        id="hero-desktop"
+        class="hero-video max-md:hidden absolute inset-0 w-full h-full object-cover"
+        muted
+        loop
+        playsinline
+        preload="none"
+    >
+        <source src="/videos/new-dolce-hero.webm" type="video/webm" />
+        <source src="/videos/new-dolce-hero.mp4" type="video/mp4" />
+    </video>
+
+    <!-- Mobile Video -->
+    <video
+        id="hero-mobile"
+        class="hero-video md:hidden absolute inset-0 w-full h-full object-cover"
+        muted
+        loop
+        playsinline
+        preload="none"
+    >
+        <source src="/videos/new-dolce-hero-mobile.webm" type="video/webm" />
+        <source src="/videos/new-dolce-hero-mobile.mp4" type="video/mp4" />
+    </video>
+</>
+
+<script>
+    let currentVideo: HTMLVideoElement | null = null;
+
+    function playCorrectVideo() {
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        const desktopVideo = document.getElementById(
+            "hero-desktop",
+        ) as HTMLVideoElement;
+        const mobileVideo = document.getElementById(
+            "hero-mobile",
+        ) as HTMLVideoElement;
+
+        const targetVideo = isMobile ? mobileVideo : desktopVideo;
+
+        if (currentVideo === targetVideo) return;
+
+        if (currentVideo) currentVideo.pause();
+
+        if (targetVideo) {
+            targetVideo.play().catch(() => {});
+            targetVideo.classList.add("playing");
+            currentVideo = targetVideo;
+        }
+    }
+
+    const poster = document.getElementById("hero-poster") as HTMLImageElement;
+
+    const init = () => playCorrectVideo();
+
+    if (poster.complete) {
+        init();
+    } else {
+        poster.addEventListener("load", init);
+    }
+
+    window.addEventListener("load", init);
+
+    // Handle resize
+    let timeout: ReturnType<typeof setTimeout>;
+    window.addEventListener("resize", () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(playCorrectVideo, 150);
+    });
+</script>

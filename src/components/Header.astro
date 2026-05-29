@@ -1,0 +1,97 @@
+---
+import { Bell, Search, Calculator } from "@lucide/astro";
+import { Image } from "astro:assets";
+import Logo from "../assets/dolce-vita-logo.webp";
+
+import MenuButton from "./MenuButton.astro";
+import MenuContent from "./MenuContent.astro";
+---
+
+<div id="scroll-sentinel" class="absolute top-4 size-px pointer-events-none">
+</div>
+
+<header
+    id="header"
+    class="data-scrolled:bg-white data-scrolled:text-black transition-all fixed top-0 z-10 w-full group/header text-white"
+>
+    <nav
+        class="max-w-360 mx-auto w-full max-md:gap-2 flex items-center justify-between px-4 py-4 lg:px-20"
+    >
+        <MenuButton />
+        <MenuContent />
+
+        <div
+            id="header-center"
+            class="flex items-center gap-8 lg:gap-20 transition-all"
+        >
+            <a
+                href="/search"
+                class="hidden xl:flex items-center gap-3 hover:opacity-80 transition-opacity"
+            >
+                <Search />
+                <span>Search</span>
+            </a>
+            <a href="/">
+                <Image
+                    loading={"eager"}
+                    src={Logo}
+                    width={144}
+                    height={92}
+                    alt={"Logo"}
+                    class="aspect-auto w-auto h-16 md:h-20 xl:h-26 invert-100 group-data-scrolled/header:invert-0"
+                />
+            </a>
+            <a
+                href="/estimate"
+                class="hidden xl:flex items-center gap-3 text-white"
+            >
+                <Calculator />
+                <span>Estimate</span>
+            </a>
+        </div>
+
+        <div
+            id="header-right"
+            class="flex items-center gap-4 md:text-lg transition-all"
+        >
+            <span>GBP</span>
+            <div
+                class="w-px bg-white h-6.5 md:h-8 flex group-data-scrolled/header:bg-black"
+                aria-hidden="true"
+            >
+            </div>
+            <span>EN</span>
+            <div
+                class="w-px bg-white h-6.5 md:h-8 flex group-data-scrolled/header:bg-black"
+                aria-hidden="true"
+            >
+            </div>
+            <button
+                class="hover:opacity-80 transition-opacity focus:outline-none"
+                aria-label="View Notifications"
+            >
+                <Bell class="max-md:size-4.5" />
+            </button>
+        </div>
+    </nav>
+</header>
+
+<script>
+    const header = document.getElementById("header") as HTMLElement;
+    const sentinel = document.getElementById("scroll-sentinel") as HTMLElement;
+
+    if (header && sentinel) {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry.isIntersecting) {
+                    header.setAttribute("data-scrolled", "scrolled");
+                } else {
+                    header.removeAttribute("data-scrolled");
+                }
+            },
+            { rootMargin: "0px", threshold: 0 },
+        );
+
+        observer.observe(sentinel);
+    }
+</script>

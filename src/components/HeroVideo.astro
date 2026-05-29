@@ -1,283 +1,41 @@
 ---
-import { Image } from "astro:assets";
-import Logo from "../assets/dolce-vita-logo.webp";
 import Select from "./Select.astro";
-import { Bell, Search, Calculator } from "@lucide/astro";
+import { Search } from "@lucide/astro";
 
-import Thumbnail from "../assets/hero-video-thumbnail.png";
+import Video from "./Video.astro";
+import Header from "./Header.astro";
+import { countries, categories } from "../data/data";
 ---
 
-<div class="hero-section relative w-full h-100 md:h-125 lg:h-150 xl:h-205">
-    <!-- Poster Image (LCP Element) -->
+<Header />
 
-    <Image
-        src={Thumbnail}
-        quality={35}
-        format="avif"
-        alt={"Dolce Vita Luxury Real Estate"}
-        fetchpriority="high"
-        loading="eager"
-        class="hero-poster absolute inset-0 w-full h-full object-cover"
-        id="hero-poster"
-    />
+<main>
+    <div class="relative w-full h-100 md:h-125 lg:h-150 xl:h-205">
+        <Video />
 
-    <!-- Desktop Video -->
-    <video
-        id="hero-desktop"
-        class="hero-video max-md:hidden absolute inset-0 w-full h-full object-cover"
-        muted
-        loop
-        playsinline
-        preload="none"
-    >
-        <source src="/videos/new-dolce-hero.webm" type="video/webm" />
-        <source src="/videos/new-dolce-hero.mp4" type="video/mp4" />
-    </video>
-
-    <!-- Mobile Video -->
-    <video
-        id="hero-mobile"
-        class="hero-video md:hidden absolute inset-0 w-full h-full object-cover"
-        muted
-        loop
-        playsinline
-        preload="none"
-    >
-        <source src="/videos/new-dolce-hero-mobile.webm" type="video/webm" />
-        <source src="/videos/new-dolce-hero-mobile.mp4" type="video/mp4" />
-    </video>
-
-    <!-- Dark Overlay -->
-    <div
-        class="absolute inset-0 bg-linear-to-b from-black/10 via-black/20 to-black/40"
-    >
-    </div>
-
-    <!-- Content -->
-    <div class="hero-content relative z-10 h-full flex flex-col">
-        <!-- Top Navigation -->
-        <nav
-            class="max-w-360 mx-auto w-full max-md:gap-2 flex items-center justify-between px-4 pt-4 lg:px-20"
+        <div
+            class="absolute inset-0 bg-linear-to-b from-black/10 via-black/20 to-black/40"
         >
-            <button class="flex items-center text-white gap-5">
-                <svg
-                    width="46"
-                    height="24"
-                    viewBox="0 0 46 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="text-white"
-                >
-                    <line
-                        x1="4"
-                        y1="10.5"
-                        x2="46"
-                        y2="10.5"
-                        stroke="currentColor"
-                        stroke-width="1"></line>
-                    <line
-                        x1="4"
-                        y1="16.5"
-                        x2="46"
-                        y2="16.5"
-                        stroke="currentColor"
-                        stroke-width="1"></line>
-                </svg>
-                <span class="text-xl max-md:hidden">Menu</span>
-            </button>
-
-            <div class="flex items-center gap-20">
-                <a
-                    href="/search"
-                    class="hidden xl:flex items-center gap-3 text-white"
-                >
-                    <Search />
-                    <span>Search</span>
-                </a>
-                <a href="/">
-                    <Image
-                        loading={"eager"}
-                        src={Logo}
-                        width={125}
-                        height={80}
-                        alt={"Logo"}
-                        class="aspect-auto w-auto h-16 md:h-20 invert-100"
-                    />
-                </a>
-                <a
-                    href="/estimate"
-                    class="hidden xl:flex items-center gap-3 text-white"
-                >
-                    <Calculator />
-                    <span>Estimate</span>
-                </a>
-            </div>
-
-            <div class="flex md:text-lg items-center gap-4 text-white">
-                <span>GBP</span>
-                <div class="w-px bg-white h-6.5 md:h-8 flex"></div>
-                <span>EN</span>
-                <div class="w-px bg-white h-6.5 md:h-8 flex"></div>
-                <button>
-                    <Bell class="max-md:size-4.5" />
-                </button>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-
-        <!-- Search Form -->
+        </div>
     </div>
-</div>
 
-<div class="bg-[#000d19] h-200 px-6 pb-12 md:px-12 text-white">
-    <div class="max-w-5xl mx-auto pt-6">
-        <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
-            <Select
-                placeholder="Category"
-                options={[
-                    { label: "Sale", value: "sale" },
-                    {
-                        label: "Rental",
-                        value: "rental",
-                    },
-                    {
-                        label: "Seasonal rental",
-                        value: "seasonal-rental",
-                    },
-                    {
-                        label: "Developement",
-                        value: "development",
-                    },
-                    {
-                        label: "Life annuity",
-                        value: "life-annuity",
-                    },
-                ]}
-            />
-            <Select
-                placeholder="Country"
-                options={[
-                    {
-                        label: "France",
-                        value: "france",
-                    },
-                    {
-                        label: "Gibraltar",
-                        value: "gibraltar",
-                    },
-                    {
-                        label: "Greece",
-                        value: "greece",
-                    },
-                    {
-                        label: "Indonesia",
-                        value: "indonesia",
-                    },
-                    {
-                        label: "Italy",
-                        value: "italy",
-                    },
-                    {
-                        label: "Mauritius",
-                        value: "mauritius",
-                    },
-                    {
-                        label: "Monaco",
-                        value: "monaco",
-                    },
-                    {
-                        label: "Morocco",
-                        value: "morocco",
-                    },
-                    {
-                        label: "Reunion",
-                        value: "reunion",
-                    },
-                    {
-                        label: "Saudi Arabia",
-                        value: "saudi arabia",
-                    },
-                    {
-                        label: "Spain",
-                        value: "spain",
-                    },
-                    {
-                        label: "Switzerland",
-                        value: "switzerland",
-                    },
-                    {
-                        label: "Thailand",
-                        value: "thailand",
-                    },
-                    {
-                        label: "United Arab Emirates",
-                        value: "united arab emirates",
-                    },
-                    {
-                        label: "United Kingdom",
-                        value: "united kingdom",
-                    },
-                    {
-                        label: "United States",
-                        value: "united states",
-                    },
-                ]}
-            />
+    <div class="bg-[#000d19] h-200 px-6 pb-12 md:px-12 text-white">
+        <div class="max-w-5xl mx-auto pt-6">
+            <div
+                class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4"
+            >
+                <Select placeholder="Category" options={categories} />
+                <Select placeholder="Country" options={countries} />
 
-            <div class="flex items-end">
-                <button
-                    class="bg-[#dd0426] transition-colors text-white font-medium px-7 py-3.5 flex items-center justify-center gap-2"
-                >
-                    <span>Search</span>
-                    <Search size="20" />
-                </button>
+                <div class="flex items-end">
+                    <button
+                        class="bg-[#dd0426] transition-colors text-white font-medium px-7 py-3.5 flex items-center justify-center gap-2"
+                    >
+                        <span>Search</span>
+                        <Search size="20" />
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<script>
-    let currentVideo: HTMLVideoElement | null = null;
-
-    function playCorrectVideo() {
-        const isMobile = window.matchMedia("(max-width: 768px)").matches;
-        const desktopVideo = document.getElementById(
-            "hero-desktop",
-        ) as HTMLVideoElement;
-        const mobileVideo = document.getElementById(
-            "hero-mobile",
-        ) as HTMLVideoElement;
-
-        const targetVideo = isMobile ? mobileVideo : desktopVideo;
-
-        if (currentVideo === targetVideo) return;
-
-        if (currentVideo) currentVideo.pause();
-
-        if (targetVideo) {
-            targetVideo.play().catch(() => {});
-            targetVideo.classList.add("playing");
-            currentVideo = targetVideo;
-        }
-    }
-
-    const poster = document.getElementById("hero-poster") as HTMLImageElement;
-
-    const init = () => playCorrectVideo();
-
-    if (poster.complete) {
-        init();
-    } else {
-        poster.addEventListener("load", init);
-    }
-
-    window.addEventListener("load", init);
-
-    // Handle resize
-    let timeout: ReturnType<typeof setTimeout>;
-    window.addEventListener("resize", () => {
-        clearTimeout(timeout);
-        timeout = setTimeout(playCorrectVideo, 150);
-    });
-</script>
+</main>

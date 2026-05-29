@@ -15,5 +15,11 @@ export default defineConfig({
       cssVariable: "--font-sans",
       weights: [400, 500, 600],
     },
+    {
+      name: "Italiana",
+      provider: fontProviders.google(),
+      cssVariable: "--font-italiana",
+      weights: [400],
+    },
   ],
 });

@@ -1,20 +1,15 @@
 ---
 import HeroVideo from "../components/HeroVideo.astro";
 import "../styles/global.css";
-import { Font } from "astro:assets";
+import Head from "../components/BaseHead.astro";
 ---
 
 <!doctype html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <Font cssVariable="--font-sans" preload />
-        <title>Dolce Vita - Luxury Real Estate</title>
+        <Head />
     </head>
     <body>
-        <HeroVideo poster="/images/hero-poster.webp" />
-
-        <!-- Rest of your page -->
+        <HeroVideo />
     </body>
 </html>
