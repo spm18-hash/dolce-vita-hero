@@ -1,5 +1,7 @@
 ---
-import { CircleX, Phone, Mail } from "@lucide/astro";
+import CircleX from "../icons/circle-x.svg";
+import Phone from "../icons/phone.svg";
+import Mail from "../icons/mail.svg";
 
 import { Image } from "astro:assets";
 
@@ -30,8 +32,11 @@ const data = [
     class="overflow-y-auto fixed xl:flex-row-reverse xl:gap-14 2xl:p-14 2xl:justify-between p-4 md:p-6 inset-0 flex gap-6 flex-col bg-white text-black z-40 w-full h-dvh transition-transform duration-500 ease-in-out -translate-x-full data-open:translate-x-0 lg:max-w-9/12"
 >
     <div class="w-full xl:max-w-xl flex flex-col gap-6">
-        <button id="close-button" class="cursor-pointer self-end"
-            ><CircleX size="52" stroke-width={0.75} /></button
+        <button
+            aria-label="Close Menu"
+            id="close-button"
+            class="cursor-pointer self-end"
+            ><CircleX class="size-13 stroke-[0.75]" /></button
         >
         <nav class="w-full flex flex-col items-center">
             <ul class="w-full flex flex-col xl:text-xl text-end">
@@ -112,7 +117,7 @@ const data = [
                     <div
                         class="flex items-center justify-center relative before:absolute before:bg-black before:size-7 before:rotate-45"
                     >
-                        <Phone size="18" stroke={"white"} class="relative" />
+                        <Phone class="size-4.5 stroke-white relative" />
                     </div>
                     <span>+44 20 8870 5665</span>
                 </div>
@@ -121,7 +126,7 @@ const data = [
                     <div
                         class="flex items-center justify-center relative before:absolute before:bg-black before:size-7 before:rotate-45"
                     >
-                        <Mail size="18" stroke={"white"} class="relative" />
+                        <Mail class="size-4.5 stroke-white relative" />
                     </div>
                     <span>contact@dolcevita.vip</span>
                 </div>
@@ -147,7 +152,7 @@ const data = [
                     <div
                         class="flex items-center justify-center relative before:absolute before:bg-black before:size-7 before:rotate-45"
                     >
-                        <Phone size="18" stroke={"white"} class="relative" />
+                        <Phone class="size-4.5 stroke-white relative" />
                     </div>
                     <span>+44 20 8870 5665</span>
                 </div>
@@ -156,7 +161,7 @@ const data = [
                     <div
                         class="flex items-center justify-center relative before:absolute before:bg-black before:size-7 before:rotate-45"
                     >
-                        <Mail size="18" stroke={"white"} class="relative" />
+                        <Mail class="size-4.5 stroke-white relative" />
                     </div>
                     <span>contact@dolcevita.vip</span>
                 </div>

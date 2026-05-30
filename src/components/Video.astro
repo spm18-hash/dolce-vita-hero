@@ -1,12 +1,21 @@
 ---
 import { Image } from "astro:assets";
+const desktopId = import.meta.env.MUX_DESKTOP_PLAYBACK_ID;
+const mobileId = import.meta.env.MUX_MOBILE_PLAYBACK_ID;
 
-import Thumbnail from "../assets/hero-video-thumbnail.png";
+const mobileVideoUrl = `https://stream.mux.com/${mobileId}/highest.mp4`;
+const desktopVideoUrl = `https://stream.mux.com/${desktopId}/highest.mp4`;
+
+const thumbBase = `https://image.mux.com/${desktopId}/thumbnail.png?time=0&fit_mode=preserve`;
 ---
 
 <>
     <Image
-        src={Thumbnail}
+        src={thumbBase}
+        width={1920}
+        height={1080}
+        sizes={"100vw"}
+        widths={[640, 1280, 1920]}
         quality={35}
         format="avif"
         alt={"Dolce Vita Luxury Real Estate"}
@@ -25,8 +34,7 @@ import Thumbnail from "../assets/hero-video-thumbnail.png";
         playsinline
         preload="none"
     >
-        <source src="/videos/new-dolce-hero.webm" type="video/webm" />
-        <source src="/videos/new-dolce-hero.mp4" type="video/mp4" />
+        <source src={desktopVideoUrl} />
     </video>
 
     <!-- Mobile Video -->
@@ -38,8 +46,7 @@ import Thumbnail from "../assets/hero-video-thumbnail.png";
         playsinline
         preload="none"
     >
-        <source src="/videos/new-dolce-hero-mobile.webm" type="video/webm" />
-        <source src="/videos/new-dolce-hero-mobile.mp4" type="video/mp4" />
+        <source src={mobileVideoUrl} />
     </video>
 </>
 
