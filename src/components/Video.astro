@@ -77,20 +77,14 @@ const thumbBase = `https://image.mux.com/${desktopId}/thumbnail.png?time=0&fit_m
 
     const poster = document.getElementById("hero-poster") as HTMLImageElement;
 
-    const init = () => playCorrectVideo();
-
     if (poster.complete) {
-        init();
+        playCorrectVideo();
     } else {
-        poster.addEventListener("load", init);
+        poster.addEventListener("load", playCorrectVideo);
     }
 
-    window.addEventListener("load", init);
+    window.addEventListener("load", playCorrectVideo);
 
-    // Handle resize
-    let timeout: ReturnType<typeof setTimeout>;
-    window.addEventListener("resize", () => {
-        clearTimeout(timeout);
-        timeout = setTimeout(playCorrectVideo, 150);
-    });
+    const mediQuery = window.matchMedia("(max-width: 768px)");
+    mediQuery.addEventListener("change", playCorrectVideo);
 </script>

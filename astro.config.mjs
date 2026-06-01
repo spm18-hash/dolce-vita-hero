@@ -3,6 +3,8 @@ import { defineConfig, fontProviders } from "astro/config";
 
 import tailwindcss from "@tailwindcss/vite";
 
+import svelte from "@astrojs/svelte";
+
 // https://astro.build/config
 export default defineConfig({
   vite: {
@@ -11,9 +13,11 @@ export default defineConfig({
       cssCodeSplit: true,
     },
   },
+
   image: {
     domains: ["image.mux.com"],
   },
+
   fonts: [
     {
       name: "Inter",
@@ -28,4 +32,6 @@ export default defineConfig({
       weights: [400],
     },
   ],
+
+  integrations: [svelte()],
 });

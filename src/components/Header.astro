@@ -5,7 +5,7 @@ import Calculator from "../icons/calculator.svg";
 import { Image } from "astro:assets";
 import Logo from "../assets/dolce-vita-logo.webp";
 
-import MenuButton from "./MenuButton.astro";
+import MenuButton from "./MenuButton.svelte";
 import MenuContent from "./MenuContent.astro";
 ---
 
@@ -19,7 +19,7 @@ import MenuContent from "./MenuContent.astro";
     <nav
         class="max-w-360 mx-auto w-full max-md:gap-2 flex items-center justify-between px-4 py-4 lg:px-20"
     >
-        <MenuButton />
+        <MenuButton client:idle />
         <MenuContent />
 
         <div
